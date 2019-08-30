@@ -21,25 +21,20 @@ app.use('/api/publications', publicationRouter);
 const server = http.createServer(app);
 const io = socketIo(server);
 
-let interval;
-let count = 1;
-let sum = 4;
-io.on('connection', socket => {  
+io.on('connection', socket => {
     console.log('socket connected', socket.id);
-    if (interval) {
-        clearInterval(interval);
-    }
-    interval = setInterval(() => {
-        const current = travel.find(stop => stop.number_stop === count);
+
+    socket.on('stop_current', number_stop => {
+        const current = travel.find(stop => stop.number_stop === number_stop);
+        const nexts_stops = travel.filter(stop => {
+            return stop.number_stop >= number_stop;
+        });
         const data = {
-            current
+            current,
+            nexts_stops
         };
         socket.emit('message', data);
-        count = count + 1;
-        if (count > 12) {
-            count = 1;
-        }
-    }, 60000);
+    });
 });
 
 mongoose.connect(config.urlMongoDB, {
