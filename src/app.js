@@ -8,6 +8,7 @@ const cors = require('cors');
 const travel = require('./travel');
 const uploadRouter = require('./routes/upload-router');
 const publicationRouter = require('./routes/publication-router');
+const path = require("path");
 
 const app = express();
 
@@ -15,6 +16,11 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(express.static(path.join(__dirname, "build")));
+
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, "build", "index.html"))
+});
 app.use('/api/upload', uploadRouter);
 app.use('/api/publications', publicationRouter);
 
