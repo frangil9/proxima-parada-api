@@ -2,14 +2,15 @@ const Publication = require('../models/publication');
 const mongoose = require('mongoose');
 
 const createPublication = async (req, res) => {
-    const {title, description, url, thubnailUrl, public_id} = req.body;
+    const {title, description, url, thubnailUrl, public_id, urlLocalAndroid} = req.body;
     const publication = new Publication({
         title,
         description,
         metadata: {
             url,
             thubnailUrl,
-            public_id
+            public_id,
+            urlLocalAndroid
         }
     });
     const publicationSave = await publication.save();
